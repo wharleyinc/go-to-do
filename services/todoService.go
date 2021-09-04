@@ -2,8 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,7 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"wharleyinc.com/to-do/data"
+	dataLayer "wharleyinc.com/to-do/data"
 	"wharleyinc.com/to-do/models"
 )
 
@@ -99,7 +97,23 @@ func (mC *mongoClient) FindByID(ctx context.Context, id primitive.ObjectID) (*mo
 	return &todo, nil
 }
 
-func FindByIDWale(c *gin.Context) {
+// getAllTodosWale, responds with the list of all todos as JSON.
+func GetAllTodos(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, dataLayer.GetAllTodos())
+}
+
+// getAllTodosWale, responds with the list of all todos as JSON.
+func CreateTodo(c *gin.Context) {
+	var newTodo models.ToDo
+
+	if err := c.BindJSON(&newTodo); err != nil {
+		return
+	}
+
+	dataLayer.CreateTodo(newTodo)
+}
+
+/* func getAllTodos(c *gin.Context) {
 	var newTodo models.ToDo
 
 	// Call BindJSON to bind the received JSON to
@@ -117,9 +131,9 @@ func FindByIDWale(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-}
+} */
 
 // Insert a single record to the db
 /* func CreateTodo(ctx, c *gin.Context) {

@@ -9,8 +9,8 @@ import (
 
 func main() {
 
-	waleClient := dataLayer.InitDataWale()
-	fmt.Println(waleClient)
+	dataLayer.InitDataWale()
+	
 
 	router.Router()
 
