@@ -113,6 +113,31 @@ func CreateTodo(c *gin.Context) {
 	dataLayer.CreateTodo(newTodo)
 }
 
+func GetTodo(c *gin.Context) {
+	// id := c.Param("id")
+	// convert id string to mongodb onbjectID
+	id, _ := primitive.ObjectIDFromHex(c.Param("id"))
+
+	c.IndentedJSON(http.StatusOK, dataLayer.GetTodo(id))
+    
+}
+
+// update status of todo with the hard-coded "Done by Wale" 
+func UpdateTodo(c *gin.Context) {
+	// convert id string to mongodb onbjectID
+	id, _ := primitive.ObjectIDFromHex(c.Param("id"))
+
+	c.IndentedJSON(http.StatusOK, dataLayer.UpdateTodo(id, "Done by Wale"))
+}
+
+// delete todo by given id
+func DeleteTodo(c *gin.Context) {
+	// convert id string to mongodb onbjectID
+	id, _ := primitive.ObjectIDFromHex(c.Param("id"))
+
+	c.IndentedJSON(http.StatusOK, dataLayer.DeleteTodo(id))
+}
+
 /* func getAllTodos(c *gin.Context) {
 	var newTodo models.ToDo
 

@@ -2,8 +2,8 @@ package dataLayer
 
 import (
 	"context"
-	"log"
 	"fmt"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"wharleyinc.com/to-do/models"
-	
 )
 
 // collection object/instance
@@ -59,7 +58,6 @@ func GetAllTodos() []primitive.M {
 		if e != nil {
 			panic(e)
 		}
-		// fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		results = append(results, result)
 
 	}
@@ -77,10 +75,47 @@ func CreateTodo(todo models.ToDo) {
 	insertResult, err := Collection.InsertOne(context.Background(), todo)
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	fmt.Println("Inserted a Single TODO Record ", insertResult.InsertedID)
+}
+
+// get one todo from db
+func GetTodo(id primitive.ObjectID) (models.ToDo) {
+	var todo models.ToDo
+	
+	err := Collection.
+		FindOne(context.Background(), bson.D{{Key: "_id", Value: id}}).
+		Decode(&todo)
+	if err != nil {
+		panic(err)
+	}
+	return todo
+}
+
+// update status of todo from db
+func UpdateTodo(id primitive.ObjectID, status string) error {
+	// to get rid remove the primitive.E composite literal uses unkeyed fields error? https://stackoverflow.com/a/67651664
+	filter := bson.D{{Key: "_id", Value: id}}
+	// to get rid remove the primitive.E composite literal uses unkeyed fields error? https://stackoverflow.com/a/67651664
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "status", Value: status}}}}
+	_, err := Collection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+	)
+	return err
+}
+
+
+// delete todo  by id from db
+func DeleteTodo(id primitive.ObjectID) error {
+	_, err := Collection.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: id}})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 
