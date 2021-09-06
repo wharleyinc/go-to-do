@@ -1,6 +1,8 @@
 package router
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 
 	"wharleyinc.com/to-do/services"
@@ -18,8 +20,17 @@ func Router() {
 	/* router.GET("/todos/:id", services.GetTodoByID) */
 	/* router.PUT("/todos/:id", services.editTodoByID) */
 	/* router.POST("/todos", services.CreateTodos) */
-	/* 	router.POST("/todos/:id", services.deleteTodoByID)
-	   	router.DELETE("/todos", services.deleteAllTodos) */
+	/* router.POST("/todos/:id", services.deleteTodoByID) */
+	/* router.DELETE("/todos", services.deleteAllTodos) */
 
-	router.Run("localhost:8080")
+	// By default, gin serves on :8080 unless a PORT environment variable was defined/set
+	// Logic to use 8080 if on local, and PORT environment variable if on Heroku
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port if not specified
+	}
+
+	router.Run(":" + port)
+	// router.Run("localhost:8080") for a hard coded port
+
 }
