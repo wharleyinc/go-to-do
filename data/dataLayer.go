@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,10 +17,14 @@ import (
 // collection object/instance
 var Collection *mongo.Collection
 
-func InitDataWale() {
+/* func InitDataWale() {
 
 	// create a new context with a 10 second timeout
 	// ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	// mongoDbLocal := "mongodb://localhost:27017/"
+	mongoDbAtlas := "mongodb+srv://wharley01:Sanctity12!@@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority"
+
 	ctx := context.Background()
 
 	// define the database
@@ -30,7 +35,7 @@ func InitDataWale() {
 	// log.Fatal(todosCollection)
 
 	// create a mongo client
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017/"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoDbAtlas))
 	if err != nil {
 		panic(err)
 	} else {
@@ -43,6 +48,19 @@ func InitDataWale() {
 
 	fmt.Println("Collection instance created!")
 
+} */
+
+func UseMongoDbAtlas() {
+	clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, clientOptions)
+	
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Collection = client.Database("ToDoList").Collection("todoList")
 }
 
 func GetAllTodos() []primitive.M {

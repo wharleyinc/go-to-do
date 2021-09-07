@@ -9,8 +9,7 @@ import (
 
 func main() {
 
-	dataLayer.InitDataWale()
-	
+	dataLayer.UseMongoDbAtlas()
 
 	router.Router()
 
