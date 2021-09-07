@@ -60,6 +60,12 @@ func UseMongoDbAtlas() {
 		log.Fatal(err)
 	}
 
+	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(databases)
+
 	Collection = client.Database("ToDoList").Collection("todoList")
 }
 
