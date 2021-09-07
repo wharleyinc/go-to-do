@@ -51,22 +51,52 @@ var Collection *mongo.Collection
 } */
 
 func UseMongoDbAtlas() {
-	clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+/* 	// clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority"))
+
+	if err != nil {
+		panic(err)
+	}
+
+	// ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	err = client.Connect(ctx)
+	if err != nil {
+		panic(err)
+	}
+	defer client.Disconnect(ctx) */
+
+
+	/* defer cancel()
 	client, err := mongo.Connect(ctx, clientOptions)
 	
 	if err != nil {
 		log.Fatal(err)
-	}
+	} */
 
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
+	// db := mongo.Client.get.database(client, "test");
+	
+	clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
+	
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	
+	defer cancel()
+	
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(databases)
 
-	Collection = client.Database("ToDoList").Collection("todoList")
+
+
+	Collection := client.Database("ToDoList").Collection("todoList")
+	/* if Collection == nil {
+		panic(Collection)
+	} */
+	fmt.Println(Collection)
+
+	// Collection = client.Database("ToDoList").Collection("todoList")
 }
 
 func GetAllTodos() []primitive.M {
