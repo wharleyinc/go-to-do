@@ -16,6 +16,7 @@ import (
 
 // collection object/instance
 var Collection *mongo.Collection
+// var DbWale *mongo.Database
 
 /* func InitDataWale() {
 
@@ -51,8 +52,8 @@ var Collection *mongo.Collection
 } */
 
 func UseMongoDbAtlas() {
-/* 	// clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority"))
+	// clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
+/* 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity12%21%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority"))
 
 	if err != nil {
 		panic(err)
@@ -65,7 +66,11 @@ func UseMongoDbAtlas() {
 	if err != nil {
 		panic(err)
 	}
-	defer client.Disconnect(ctx) */
+	
+	// DbWale = client.Database("ToDoList")
+	Collection = client.Database("ToDoList").Collection("todoList") */
+
+	// defer client.Disconnect(ctx) // this was disconnecting the client before crud operations
 
 
 	/* defer cancel()
@@ -77,7 +82,7 @@ func UseMongoDbAtlas() {
 
 	// db := mongo.Client.get.database(client, "test");
 	
-	clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity1%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://wharley01:Sanctity12%21%40@wharleycluster01.j4stb.mongodb.net/ToDoList?retryWrites=true&w=majority")
 	
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	
@@ -85,21 +90,28 @@ func UseMongoDbAtlas() {
 	
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
+		
 	}
 
+	Collection = client.Database("ToDoList").Collection("todoList")
 
 
-	Collection := client.Database("ToDoList").Collection("todoList")
-	/* if Collection == nil {
-		panic(Collection)
-	} */
-	fmt.Println(Collection)
+
+	
+
+
+	// Collection := client.Database("ToDoList").Collection("todoList")
+	// /* if Collection == nil {
+	// 	panic(Collection)
+	// } */
+	// fmt.Println(Collection)
 
 	// Collection = client.Database("ToDoList").Collection("todoList")
 }
 
 func GetAllTodos() []primitive.M {
+	// collection := DbWale.Collection("todoList")
 	cur, err := Collection.Find(context.Background(), bson.D{{}})
 	if err != nil {
 		panic(err)
@@ -126,6 +138,7 @@ func GetAllTodos() []primitive.M {
 
 // Insert one todo in the DB
 func CreateTodo(todo models.ToDo) {
+	// collection := DbWale.Collection("todoList")
 	insertResult, err := Collection.InsertOne(context.Background(), todo)
 
 	if err != nil {
@@ -138,10 +151,9 @@ func CreateTodo(todo models.ToDo) {
 // get one todo from db
 func GetTodo(id primitive.ObjectID) (models.ToDo) {
 	var todo models.ToDo
+	// collection := DbWale.Collection("todoList")
 	
-	err := Collection.
-		FindOne(context.Background(), bson.D{{Key: "_id", Value: id}}).
-		Decode(&todo)
+	err := Collection.FindOne(context.Background(), bson.D{{Key: "_id", Value: id}}).Decode(&todo)
 	if err != nil {
 		panic(err)
 	}
@@ -150,6 +162,7 @@ func GetTodo(id primitive.ObjectID) (models.ToDo) {
 
 // update status of todo from db
 func UpdateTodo(id primitive.ObjectID, status string) error {
+	// collection := DbWale.Collection("todoList")
 	// to get rid remove the primitive.E composite literal uses unkeyed fields error? https://stackoverflow.com/a/67651664
 	filter := bson.D{{Key: "_id", Value: id}}
 	// to get rid remove the primitive.E composite literal uses unkeyed fields error? https://stackoverflow.com/a/67651664
@@ -165,6 +178,7 @@ func UpdateTodo(id primitive.ObjectID, status string) error {
 
 // delete todo  by id from db
 func DeleteTodo(id primitive.ObjectID) error {
+	// collection := DbWale.Collection("todoList")
 	_, err := Collection.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: id}})
 	if err != nil {
 		return err
